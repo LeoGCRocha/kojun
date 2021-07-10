@@ -26,8 +26,11 @@ pegarGrupoPonto (_,y) = y
 
 -- retorna um elemento na coordenada especificada, o segundo parametro de ponto define o tamanho do tabuleiro, ou seja o limite do jogo.
 -- (-1,-1) é o retorno padrão para erros
+-- https://stackoverflow.com/questions/5217171/how-can-i-get-nth-element-from-a-list
 pegarPontoCoordernada :: Coordenada -> [[Ponto]]-> Ponto 
-pegarPontoCoordernada (x,y) mat = mat !! x !! y -- mat !! 0 !! 0 percorre o indice 0 , 0 por exemplo.
+pegarPontoCoordernada (x,y) m | (x < 0) || (x > (length m) - 1) = (-1, -1)
+  | (y < 0) || (y > (length (m !! 0) - 1)) = (-1, -1)
+  | otherwise = m !! x !! y
 
 -- Retorna todos as coordenadas que fazem parte da posição atual.
 pegarCoordenadasPorGrupo :: Coordenada -> [[Ponto]] -> [Coordenada]
@@ -41,8 +44,7 @@ auxiliarGrupo :: Coordenada -> Int -> [[Ponto]]->[Coordenada]
 -- usando list compreeshion para construir o vetor de coordenadas, num representa o grupo especifico
 -- A recebendo os valores da mat[], B recebendo os valores da mat em [][]
 -- Condição é se o grupo atual for igual o grupo solicitado
--- DUVIDA DUVIDA !!!! COMO CONTINUAR AQUI ?!?!?!?
-auxiliarGrupo (x,y) grupo m = [(a,b) | a <- [0..(length m)], b <- [0..(length (m!!0))], pegarGrupoPonto (pegarPontoCoordernada (a,b) m) == grupo]
+auxiliarGrupo (x,y) grupo m = [(a, b) | a <- [0..(length m)], b <- [0..(length (m!!0))], pegarGrupoPonto(pegarPontoCoordernada (a,b) m) == grupo, (x,y) /= (a,b)] 
 
 main = do
   {---
@@ -50,5 +52,4 @@ main = do
   print(pegarValorPonto (1,2))
   print(pegarGrupoPonto (1,2))
   print(pegarPontoCoordernada (1,1) mat) -- teste para pegar um ponto ---}
-  let p = pegarCoordenadasPorGrupo (1,2) m-- teste
-  print(p!!0)
+  print(pegarCoordenadasPorGrupo (0,0) m)
