@@ -27,4 +27,6 @@ pegarGrupoPonto :: Ponto -> Int
 pegarGrupoPonto (x,_) = x
 
 main = do
-  putStrLn "Get started!"
+  -- Demonstração metodos, para testes
+  print(pegarValorPonto (1,2))
+  print(pegarGrupoPonto (1,2))
