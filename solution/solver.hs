@@ -23,18 +23,23 @@ pegarValorPonto (x, _) = x
 pegarGrupoPonto :: Ponto -> Int
 pegarGrupoPonto (_,y) = y
 
+pegarX:: Coordenada -> Int
+pegarX (x,_) = x
+
+pegarY :: Coordenada -> Int
+pegarY (_,y) = y
+
 -- retorna um elemento na coordenada especificada, o segundo parametro de ponto define o tamanho do tabuleiro, ou seja o limite do jogo.
 -- (-1,-1) é o retorno padrão para erros
 -- https://stackoverflow.com/questions/5217171/how-can-i-get-nth-element-from-a-list
 pegarPontoCoordernada :: Coordenada -> [[Ponto]]-> Ponto 
-pegarPontoCoordernada (x,y) m | (x < 0) || (x > (length m) - 1) = (-1, -1)
+pegarPontoCoordernada (x,y) m | (x < 0) || (x > length m - 1) = (-1, -1)
   | (y < 0) || (y > (length (head m) - 1)) = (-1, -1)
   | otherwise = m !! x !! y
 
 -- Retorna todos as coordenadas que fazem parte da posição atual.
 pegarCoordenadasPorGrupo :: Coordenada -> [[Ponto]] -> [Coordenada]
 -- passando como parametro o ponto na coordenada especifica para obter seu grupo.
--- como salvar isso em uma unica variavele para poupar repetição ?!?!?!
 -- exemplo let ponto = pegarPontoCoordenada cord mat
 -- auxliarGrupo ponto (pegarGrupoPonto ponto) mat 
 pegarCoordenadasPorGrupo cord mat = auxiliarGrupo cord (pegarGrupoPonto (pegarPontoCoordernada cord m)) m
@@ -46,14 +51,31 @@ auxiliarGrupo :: Coordenada -> Int -> [[Ponto]]->[Coordenada]
 -- https://hackage.haskell.org/package/base-4.15.0.0/docs/Data-List.html
 auxiliarGrupo (x,y) grupo m = [(a, b) | a <- [0..(length m)], b <- [0..(length (head m))], pegarGrupoPonto(pegarPontoCoordernada (a,b) m) == grupo, (x,y) /= (a,b)] 
 
+-- Procura a primeira cordenada vazia (0,_). Caso não seja encontrada nenhuma significa que o tabuleiro já esta motando então retorna (-1,-1) 
+coordenadaVazia :: [[Ponto]] -> Coordenada
+coordenadaVazia m = verificaVazia (0,0) m -- É enviado a coordenada inicial para partir dela como referência.
+
+-- Metodo de ajuste para o segundo retorno de vazio, primeiro verificar se as posições antendem os limites maximos da matriz.
+-- Caso sim, chama o proximo metodo de comparação para verificar se o valor na coordenada é valido.
+verificaVazia :: Coordenada -> [[Ponto]] -> Coordenada
+verificaVazia cord m 
+  | (pegarX cord == length m) && (pegarY cord == length (head m)) = (-1, -1) -- Verificando se indice foi estourado
+  | pegarY cord == length (head m) = verificarValorVazio cord m
+  | pegarValorPonto(pegarPontoCoordernada cord m) == 0 = cord -- Ponto já nulo, retorna ele.
+  | otherwise  = verificaVazia (pegarX cord, pegarY cord + 1) m -- Ajustando indice em (_,y) para deslocar para proxima coordeanda.
+
+verificarValorVazio :: Coordenada -> [[Ponto]] -> Coordenada
+verificarValorVazio cord m 
+  | pegarValorPonto (pegarPontoCoordernada cord m) == 0 = cord 
+  | otherwise  = verificaVazia (pegarX cord + 1, 0) m -- Ajudando indice em (x,_) para deslocar para proxima coordenada.
+
 soluciona :: Coordenada -> [[Ponto]] -> [[Ponto]]
 soluciona c m = [[(-1,-1)]] -- continuar daqui solucionando por backtracking
 
 solucionador :: [[Ponto]] -> [[Ponto]]
--- verificações
 solucionador m 
-  | (length m) > 10 = [[(-1,-1)]] -- erro matriz invalida, retorna (-1,-1)
-  | (length (head m)) == 0 = [[(-1,-1)]] 
+  | length m > 10 = [[(-1,-1)]] -- erro matriz invalida, retorna (-1,-1)
+  | null (head m) = [[(-1,-1)]] 
   | otherwise = soluciona (0,0) m
 main = do
   {---
