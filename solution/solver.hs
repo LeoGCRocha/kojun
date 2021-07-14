@@ -3,10 +3,9 @@ Codigo desenvolvido por Leonardo e Andre.
 Matriculas: 19102922 e XXXXXXXXX.
 -> Regras:
 1)Insira um número em cada célula do diagrama de forma que cada região de tamanho N contenha cada número de 1 a N exatamente uma vez.
-2)Os números nas células ortogonalmente adjacentes devem ser diferentes.
+2) Os números nas células ortogonalmente adjacentes devem ser diferentes.
 3) Se duas células estiverem verticalmente adjacentes na mesma região, o número da célula superior deve ser maior do que o número da célula inferior.
 --}
--- tabuleiro 6x6(base)
 -- sistema de coordenadas, para acessar uma matriz do tipo parametros: (linha, coluna)
 type Coordenada = (Int, Int)
 
@@ -44,12 +43,23 @@ auxiliarGrupo :: Coordenada -> Int -> [[Ponto]]->[Coordenada]
 -- usando list compreeshion para construir o vetor de coordenadas, num representa o grupo especifico
 -- A recebendo os valores da mat[], B recebendo os valores da mat em [][]
 -- Condição é se o grupo atual for igual o grupo solicitado
-auxiliarGrupo (x,y) grupo m = [(a, b) | a <- [0..(length m)], b <- [0..(length (m!!0))], pegarGrupoPonto(pegarPontoCoordernada (a,b) m) == grupo, (x,y) /= (a,b)] 
+-- https://hackage.haskell.org/package/base-4.15.0.0/docs/Data-List.html
+auxiliarGrupo (x,y) grupo m = [(a, b) | a <- [0..(length m)], b <- [0..(length (head m))], pegarGrupoPonto(pegarPontoCoordernada (a,b) m) == grupo, (x,y) /= (a,b)] 
 
+soluciona :: Coordenada -> [[Ponto]] -> [[Ponto]]
+soluciona c m = [[(-1,-1)]] -- continuar daqui solucionando por backtracking
+
+solucionador :: [[Ponto]] -> [[Ponto]]
+-- verificações
+solucionador m 
+  | (length m) > 10 = [[(-1,-1)]] -- erro matriz invalida, retorna (-1,-1)
+  | (length (head m)) == 0 = [[(-1,-1)]] 
+  | otherwise = soluciona (0,0) m
 main = do
   {---
   -- Demonstração metodos, para testes
   print(pegarValorPonto (1,2))
   print(pegarGrupoPonto (1,2))
   print(pegarPontoCoordernada (1,1) mat) -- teste para pegar um ponto ---}
+  print(solucionador [[]]) -- teste com matriz invalida
   print(pegarCoordenadasPorGrupo (0,0) m)
