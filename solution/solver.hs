@@ -33,7 +33,8 @@ pegarY (_,y) = y
 -- (-1,-1) é o retorno padrão para erros
 -- https://stackoverflow.com/questions/5217171/how-can-i-get-nth-element-from-a-list
 pegarPontoCoordernada :: Coordenada -> [[Ponto]]-> Ponto 
-pegarPontoCoordernada (x,y) m | (x < 0) || (x > length m - 1) = (-1, -1)
+pegarPontoCoordernada (x,y) m 
+  | (x < 0) || (x > length m - 1) = (-1, -1)
   | (y < 0) || (y > (length (head m) - 1)) = (-1, -1)
   | otherwise = m !! x !! y
 
