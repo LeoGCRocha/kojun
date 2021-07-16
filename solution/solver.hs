@@ -70,6 +70,36 @@ verificarValorVazio cord m
   | pegarValorPonto (pegarPontoCoordernada cord m) == 0 = cord 
   | otherwise  = verificaVazia (pegarX cord + 1, 0) m -- Ajudando indice em (x,_) para deslocar para proxima coordenada.
 
+-- Metodo para troca de elemento da lista em uma dada posicao
+-- Recebe um ponto da matriz [(x,y)] x -> valor do ponto | y -> valor do grupo
+-- Recebe um indicador do grupo -> z 
+-- Recebe um indicador do ponto -> w
+-- Recebe um indicador do novo ponto a ser recebido -> p
+-- Retorno do novo ponto para reposicionamento -> [Ponto]
+reposicionaponto :: [Ponto] -> Int -> Int -> Ponto -> [Ponto]
+reposicionaponto [] _ _ _ = [(-1,-1)]
+reposicionaponto (x:y) z w p
+  | z == w = p:y
+  | otherwise = x: reposicionaponto y z (w + 1) p 
+
+-- Metodo para troca de linha da matriz de elementos em uma dada posição
+-- Recebe um vetor de pontos da matriz -> [[Ponto]]
+-- Recebe o valor da nova linha da matriz -> z
+-- Recebe o valor da nova coluna da matriz -> w
+-- Recebe o valor da nova linha da matriz -> l
+reposicionalinha :: [[Ponto]] -> Int -> Int -> [Ponto] -> [[Ponto]]
+reposicionalinha [] _ _ _ = [[(-1,-1)]]
+reposicionalinha (x:y) z w l
+    | z == w = l:y
+    | otherwise = x:reposicionalinha y z (w + 1) l
+
+-- Metdodo para troca de coordenada da matriz, levando em conta a posicao especificada
+troca :: Coordenada -> Ponto -> [[Ponto]] -> [[Ponto]]
+troca (x, y) ponto matriz
+    | (x < 0) || (x > length matriz -1) = error "posicao fora da matriz" -- verificação se a posicao de troca de x é valida, caso seja, parte para a verificação da posição y, caso contrário a posição é invalida
+    | (y < 0) || (y > (length (head matriz) -1)) = error "posicao fora da matriz" -- verificação se a posicao de y é valida, caso seja, parte para o posicionamento do ponto na coordenada desginada, caso contrário a posicao é invalida 
+    | otherwise = reposicionalinha matriz x 0 (reposicionaponto (matriz!!x) y 0 ponto) -- posicionamento do ponto na coordenada desejada, por meio da chamada recursiva de reposicionaponto, reposicionalinha
+
 soluciona :: Coordenada -> [[Ponto]] -> [[Ponto]]
 soluciona c m = [[(-1,-1)]] -- continuar daqui solucionando por backtracking
 
