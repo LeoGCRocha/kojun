@@ -130,6 +130,9 @@ verificarNaLista num (x:y) matriz
   | otherwise = verificarNaLista num y matriz
 
 -- Metodos finais, falta fazer logicas de verificação para encaixar com eles.
+-- Terminar os dois metodos de solve.
+-- Aplicar regra de verificação no grupo.
+
 soluciona :: Coordenada -> [[Ponto]] -> [[Ponto]]
 soluciona c m = [[(-1,-1)]] -- continuar daqui solucionando por backtracking
 
