@@ -7,10 +7,13 @@ Matriculas: 19102922 e XXXXXXXXX.
 3) Se duas células estiverem verticalmente adjacentes na mesma região, o número da célula superior deve ser maior do que o número da célula inferior.
 --}
 -- sistema de coordenadas, para acessar uma matriz do tipo parametros: (linha, coluna)
+-- Esses links deram base para enteder alguns conceitos:
+-- ref#1: https://abhinavsarkar.net/posts/fast-sudoku-solver-in-haskell-1/
+-- ref#2http://www.cse.chalmers.se/edu/year/2010/course/TDA555/lab3.html
 type Coordenada = (Int, Int)
 
--- sistemas de pontos, com uma tupla onde primeiro ponto é o valor e o segundo ponto é seu grupo. parametros: (valor numerico, grupo)
--- campos vazios seram representados com 0
+-- Sistemas de pontos, com uma tupla onde primeiro ponto é o valor e o segundo ponto é seu grupo. parametros: (valor numerico, grupo)
+-- Campos vazios seram representados com 0
 type Ponto = (Int, Int)
 m = [[(0, 0), (0, 1), (4, 1), (0, 1), (2, 3), (0, 4)], [(0, 0), (0, 1), (3, 2), (0, 3), (0, 3), (0, 3)], [(1, 0), (4, 0), (0, 5), (4, 3), (0, 10), (0, 10)], [(0, 6), (5, 7), (0, 5), (0, 9), (0, 9), (2, 10)], [(0, 6), (0, 7), (0, 7), (0, 8), (3, 8), (0, 10)], [(6, 7), (2, 7), (0, 7), (2, 8), (0, 8), (5, 8)]]
 
@@ -129,24 +132,26 @@ verificarNaLista num (x:y) matriz
   | pegarValorPonto(pegarPontoCoordernada x matriz) == num = False
   | otherwise = verificarNaLista num y matriz
 
+-- Metodo retorna números que podem completar uma coordenada, onde é aplicado o filtro de verificação para fazer checagens sobre 
+-- a possibilidade do numero estar na posição.
+numValidos :: Coordenada -> [[Ponto]] -> [Int]
+numValidos cord m = [n | n <- [1..(length(pegarCoordenadasPorGrupo cord m)+1)], verificarNumeroCoordGrupo n cord m]
+
 -- Metodos finais, falta fazer logicas de verificação para encaixar com eles.
 -- Terminar os dois metodos de solve.
 -- Aplicar regra de verificação no grupo.
-
-soluciona :: Coordenada -> [[Ponto]] -> [[Ponto]]
-soluciona c m = [[(-1,-1)]] -- continuar daqui solucionando por backtracking
+-- Recebe a coordenada que sera testada, a matriz total e os numeros possiveis para a coordenada especifica.
+-- Nessee metodo uma matriz nova vai sendo reconstruida atraves de chamadas recursivas
+soluciona :: Coordenada -> [[Ponto]] -> [Int] -> [[Ponto]]
+soluciona _ [] = [] -- matriz vazia de entrada retorno padrão.
+soluciona (-1,-1) m _ = m -- posição invalida retorno deve ser o mesmo
+soluciona (x,y) m (i:is)
+  | solucao1 == [] = soluciona (x,y) m is -- Posição atual vazia, executar teste novamente.
+  | otherwise = solucao1
+  where 
+    solucao1 (x,y) m = soluciona (--continuar daqui) -- duvida -- ver com o andre
 
 solucionador :: [[Ponto]] -> [[Ponto]]
-solucionador m 
-  | length m > 10 = [[(-1,-1)]] -- erro matriz invalida, retorna (-1,-1)
-  | null (head m) = [[(-1,-1)]] 
-  | otherwise = soluciona (0,0) m
-
+solucionador m = [[(0,0)]]
 main = do
-  {---
-  -- Demonstração metodos, para testes
-  print(pegarValorPonto (1,2))
-  print(pegarGrupoPonto (1,2))
-  print(pegarPontoCoordernada (1,1) mat) -- teste para pegar um ponto ---}
-  print(solucionador [[]]) -- teste com matriz invalida
-  print(pegarCoordenadasPorGrupo (0,0) m)
+  print(solucionador m) -- Resultado final com solução da matriz
