@@ -41,7 +41,7 @@ pegarPontoCoordernada (x,y) m
 -- Retorna todos as coordenadas que fazem parte da posição atual.
 pegarCoordenadasPorGrupo :: Coordenada -> [[Ponto]] -> [Coordenada]
 -- passando como parametro o ponto na coordenada especifica para obter seu grupo.
--- exemplo let ponto = pegarPontoCoordenada cord mat
+-- exemplo let ponto = pegarPontoCoordenada cord mat, não consegui fazer.
 -- auxliarGrupo ponto (pegarGrupoPonto ponto) mat 
 pegarCoordenadasPorGrupo cord mat = auxiliarGrupo cord (pegarGrupoPonto (pegarPontoCoordernada cord m)) m
 
@@ -100,6 +100,36 @@ troca (x, y) ponto matriz
     | (y < 0) || (y > (length (head matriz) -1)) = error "posicao fora da matriz" -- verificação se a posicao de y é valida, caso seja, parte para o posicionamento do ponto na coordenada desginada, caso contrário a posicao é invalida 
     | otherwise = reposicionalinha matriz x 0 (reposicionaponto (matriz!!x) y 0 ponto) -- posicionamento do ponto na coordenada desejada, por meio da chamada recursiva de reposicionaponto, reposicionalinha
 
+-- Metodo para fazer a verificação se um numero passado como parametro, não foi alocado no grupo.
+-- O metodo verify list é usado como auxiliar para este, dando suporte as operações.
+-- Para o metodo verificar lista é passado todos os pontos que pertecem ao mesmo grupo da coordenada especificada na chamada.
+verificarNumeroCoordGrupo :: Int -> Coordenada -> [[Ponto]] -> Bool
+verificarNumeroCoordGrupo num cord matriz = verificarNaLista num (pegarCoordenadasPorGrupo cord matriz) matriz
+
+-- Metodo para verificar se o numero passado é valido para uma coordenada (x,y)
+verificarNum :: Int -> Coordenada -> [[Ponto]] -> Bool
+verificarNum num cord matriz = (verificarNumeroCoordGrupo num cord matriz) && (verificaCoordAdj num cord matriz) 
+
+-- Metodo para verificacao se a lista contem todas as coordenadas adjacentes a cooordenada procurada
+-- retorna a lista de elementos adjacentes ao elemento especificado
+getCoordAdj :: Coordenada -> [Coordenada]
+getCoordAdj (x,y) = [(z,w) | z <-[(x - 1) ..(x + 1)], w <- [(y-1)..(y+1)],(x,y) /= (z,w)]
+
+--- verifyneib
+-- Metodo para verificacao do numero passado ser encontrado em coordenadas adjacentes
+-- por meio da chamada recursiva do metodo GetCoordAdj
+-- retorna um valor Booleano
+verificaCoordAdj :: Int -> Coordenada -> [[Ponto]] -> Bool
+verificaCoordAdj num cord matriz = verificarNaLista num (getCoordAdj cord) matriz
+
+-- Metodo para verificacao da Lista de pontos se é igual ao valor procurado
+verificarNaLista :: Int -> [Coordenada] -> [[Ponto]] -> Bool
+verificarNaLista _ [] _   = True
+verificarNaLista num (x:y) matriz
+  | pegarValorPonto(pegarPontoCoordernada x matriz) == num = False
+  | otherwise = verificarNaLista num y matriz
+
+-- Metodos finais, falta fazer logicas de verificação para encaixar com eles.
 soluciona :: Coordenada -> [[Ponto]] -> [[Ponto]]
 soluciona c m = [[(-1,-1)]] -- continuar daqui solucionando por backtracking
 
@@ -108,6 +138,7 @@ solucionador m
   | length m > 10 = [[(-1,-1)]] -- erro matriz invalida, retorna (-1,-1)
   | null (head m) = [[(-1,-1)]] 
   | otherwise = soluciona (0,0) m
+
 main = do
   {---
   -- Demonstração metodos, para testes
