@@ -148,7 +148,7 @@ soluciona :: Coordenada -> [[Ponto]] -> [Int] -> [[Ponto]]
 soluciona _ _ [] = [] -- matriz vazia de entrada retorno padrão.
 soluciona (-1,-1) m _ = m -- posição invalida retorno deve ser o mesmo
 soluciona (x,y) m (i:is)
-  | solucao1 == [] = soluciona (x,y) m is -- Posição atual vazia, executar teste novamente.
+  | null solucao1 = soluciona (x,y) m is -- Posição atual vazia, executar teste novamente.
   | otherwise = solucao1
   where 
     solucionando (x,y) m = soluciona (coordenadaVazia m) m (numValidos (coordenadaVazia m) m)--teste
