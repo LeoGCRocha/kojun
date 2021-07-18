@@ -142,16 +142,20 @@ numValidos cord m = [n | n <- [1..(length(pegarCoordenadasPorGrupo cord m)+1)], 
 -- Aplicar regra de verificação no grupo.
 -- Recebe a coordenada que sera testada, a matriz total e os numeros possiveis para a coordenada especifica.
 -- Nessee metodo uma matriz nova vai sendo reconstruida atraves de chamadas recursivas
+
+-- resolve o puzzle utilizando backtracking
 soluciona :: Coordenada -> [[Ponto]] -> [Int] -> [[Ponto]]
-soluciona _ [] = [] -- matriz vazia de entrada retorno padrão.
+soluciona _ _ [] = [] -- matriz vazia de entrada retorno padrão.
 soluciona (-1,-1) m _ = m -- posição invalida retorno deve ser o mesmo
 soluciona (x,y) m (i:is)
   | solucao1 == [] = soluciona (x,y) m is -- Posição atual vazia, executar teste novamente.
   | otherwise = solucao1
   where 
-    solucao1 (x,y) m = soluciona (--continuar daqui) -- duvida -- ver com o andre
+    solucionando (x,y) m = soluciona (coordenadaVazia m) m (numValidos (coordenadaVazia m) m)--teste
+    solucao1  = solucionando (x,y) (troca (x, y) (i, pegarGrupoPonto(pegarPontoCoordernada (x, y) m)) m )
 
 solucionador :: [[Ponto]] -> [[Ponto]]
-solucionador m = [[(0,0)]]
+solucionador m = soluciona (0,0) m (numValidos (0,0) m)
+
 main = do
   print(solucionador m) -- Resultado final com solução da matriz
