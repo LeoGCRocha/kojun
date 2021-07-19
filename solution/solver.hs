@@ -1,6 +1,6 @@
 {---
 Codigo desenvolvido por Leonardo e Andre.
-Matriculas: 19102922 e XXXXXXXXX.
+Matriculas: 19102922 e 19150871.
 -> Regras:
 1)Insira um número em cada célula do diagrama de forma que cada região de tamanho N contenha cada número de 1 a N exatamente uma vez.
 2) Os números nas células ortogonalmente adjacentes devem ser diferentes.
@@ -10,6 +10,7 @@ Matriculas: 19102922 e XXXXXXXXX.
 -- Esses links deram base para enteder alguns conceitos:
 -- ref#1: https://abhinavsarkar.net/posts/fast-sudoku-solver-in-haskell-1/
 -- ref#2http://www.cse.chalmers.se/edu/year/2010/course/TDA555/lab3.html
+-- docs: https://docs.google.com/document/d/1fXurGjbriB75zIhL7agJ220ZSGUsI-GTU4fbOJ1trDY/edit?usp=sharing
 type Coordenada = (Int, Int)
 
 -- Sistemas de pontos, com uma tupla onde primeiro ponto é o valor e o segundo ponto é seu grupo. parametros: (valor numerico, grupo)
