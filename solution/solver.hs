@@ -123,7 +123,7 @@ getCoordAdj (x,y) = [(z,w) | z <-[(x - 1) ..(x + 1)], w <- [(y-1)..(y+1)],(x,y) 
 -- por meio da chamada recursiva do metodo GetCoordAdj
 -- retorna um valor Booleano
 verificaCoordAdj :: Int -> Coordenada -> [[Ponto]] -> Bool
-verificaCoordAdj num cord matriz = verificarNaLista num (getCoordAdj cord) matriz
+verificaCoordAdj num cord matriz = verificarNaLista num (getCoordAdj cord) matriz && verificarCordAdjSupInf cord matriz
 
 -- Metodo para verificacao da Lista de pontos se é igual ao valor procurado
 verificarNaLista :: Int -> [Coordenada] -> [[Ponto]] -> Bool
@@ -131,6 +131,13 @@ verificarNaLista _ [] _   = True
 verificarNaLista num (x:y) matriz
   | pegarValorPonto(pegarPontoCoordernada x matriz) == num = False
   | otherwise = verificarNaLista num y matriz
+
+-- Vertificando se duas cedulas forem duas regiões iguais, a superior deve ser maior que a inferior
+verificarCordAdjSupInf :: Coordenada -> [[Ponto]] -> Bool
+verificarCordAdjSupInf (x,y) m 
+    | y == 0 = True
+    | (pegarGrupoPonto(pegarPontoCoordernada (x, y-1) m) == pegarGrupoPonto(pegarPontoCoordernada(x,y) m)) && (pegarValorPonto(pegarPontoCoordernada (x,y-1) m) >= pegarValorPonto(pegarPontoCoordernada (x,y) m)) = True
+    | otherwise = False
 
 -- Metodo retorna números que podem completar uma coordenada, onde é aplicado o filtro de verificação para fazer checagens sobre 
 -- a possibilidade do numero estar na posição.
