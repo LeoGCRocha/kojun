@@ -2,7 +2,7 @@
 Codigo desenvolvido por Leonardo e Andre.
 Matriculas: 19102922 e 19150871.
 -> Regras:
-1)Insira um número em cada célula do diagrama de forma que cada região de tamanho N contenha cada número de 1 a N exatamente uma vez.
+1) Insira um número em cada célula do diagrama de forma que cada região de tamanho N contenha cada número de 1 a N exatamente uma vez.
 2) Os números nas células ortogonalmente adjacentes devem ser diferentes.
 3) Se duas células estiverem verticalmente adjacentes na mesma região, o número da célula superior deve ser maior do que o número da célula inferior.
 --}
@@ -113,11 +113,15 @@ verificarNumeroCoordGrupo num cord matriz = verificarNaLista num (pegarCoordenad
 -- Metodo para verificar se o numero passado é valido para uma coordenada (x,y)
 verificarNum :: Int -> Coordenada -> [[Ponto]] -> Bool
 verificarNum num cord matriz = (verificarNumeroCoordGrupo num cord matriz) && (verificaCoordAdj num cord matriz) 
-
+-- Caso de tese para veficar se a coord adj esta valida, se não ira retornar false para o programa.
+f :: Coordenada -> Bool
+f (x,y) 
+  | x < 0 || y < 0 = False
+  | otherwise  = True
 -- Metodo para verificacao se a lista contem todas as coordenadas adjacentes a cooordenada procurada
 -- retorna a lista de elementos adjacentes ao elemento especificado
 getCoordAdj :: Coordenada -> [Coordenada]
-getCoordAdj (x,y) = [(z,w) | z <-[(x - 1) ..(x + 1)], w <- [(y-1)..(y+1)],(x,y) /= (z,w)]
+getCoordAdj (x,y) = filter f [(x+1,y), (x-1,y), (x,y+1), (x,y-1)] 
 
 --- verifyneib
 -- Metodo para verificacao do numero passado ser encontrado em coordenadas adjacentes
@@ -137,13 +141,14 @@ verificarNaLista num (x:y) matriz
 verificarCordAdjSupInf :: Coordenada -> [[Ponto]] -> Bool
 verificarCordAdjSupInf (x,y) m 
     | y == 0 = True
-    | (pegarGrupoPonto(pegarPontoCoordernada (x, y-1) m) == pegarGrupoPonto(pegarPontoCoordernada(x,y) m)) && (pegarValorPonto(pegarPontoCoordernada (x,y-1) m) >= pegarValorPonto(pegarPontoCoordernada (x,y) m)) = True
+    | pegarGrupoPonto(pegarPontoCoordernada2 (x, y-1) m) /= pegarGrupoPonto(pegarPontoCoordernada2 (x,y) m) = True
+    | pegarValorPonto(pegarPontoCoordernada2 (x,y-1) m) >= pegarValorPonto(pegarPontoCoordernada2 (x,y) m) = True
     | otherwise = False
 
 -- Metodo retorna números que podem completar uma coordenada, onde é aplicado o filtro de verificação para fazer checagens sobre 
 -- a possibilidade do numero estar na posição.
 numValidos :: Coordenada -> [[Ponto]] -> [Int]
-numValidos cord m = [n | n <- [1..(length(pegarCoordenadasPorGrupo cord m)+1)], verificarNumeroCoordGrupo n cord m]
+numValidos cord m = [n | n <- [1..(length(pegarCoordenadasPorGrupo cord m)+1)], verificarNum n cord m]
 
 -- Metodos finais, falta fazer logicas de verificação para encaixar com eles.
 -- Terminar os dois metodos de solve.
@@ -165,5 +170,6 @@ soluciona (x,y) m (i:is)
 solucionador :: [[Ponto]] -> [[Ponto]]
 solucionador m = soluciona (0,0) m (numValidos (0,0) m)
 
+main :: IO ()
 main = do
   print(solucionador m) -- Resultado final com solução da matriz
