@@ -167,4 +167,3 @@ solucionador m = soluciona (0,0) m (numValidos (0,0) m)
 
 main = do
   print(solucionador m) -- Resultado final com solução da matriz
->>>>>>> 4ff9ec62f15ebfdcfa509ecde14d529518255ad0
