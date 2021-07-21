@@ -16,7 +16,7 @@ type Coordenada = (Int, Int)
 -- Sistemas de pontos, com uma tupla onde primeiro ponto é o valor e o segundo ponto é seu grupo. parametros: (valor numerico, grupo)
 -- Campos vazios seram representados com 0
 type Ponto = (Int, Int)
-m = [[(0, 0), (0, 1), (4, 1), (0, 1), (2, 3), (0, 4)], [(0, 0), (0, 1), (3, 2), (0, 3), (0, 3), (0, 3)], [(1, 0), (4, 0), (0, 5), (4, 3), (0, 10), (0, 10)], [(0, 6), (5, 7), (0, 5), (0, 9), (0, 9), (2, 10)], [(0, 6), (0, 7), (0, 7), (0, 8), (3, 8), (0, 10)], [(6, 7), (2, 7), (0, 7), (2, 8), (0, 8), (5, 8)]]
+m = [[(0, 0), (0, 1), (4, 1), (0, 1), (2, 5), (0, 4)], [(0, 0), (0, 2), (3, 1), (0, 5), (0, 5), (0, 5)], [(1, 0), (4, 0), (0, 6), (4, 5), (0, 8), (0, 8)], [(0, 12), (5, 11), (0, 6), (0, 7), (0, 7), (2, 8)], [(0, 12), (0, 11), (0, 11), (0, 10), (3, 10), (0, 8)], [(6, 11), (2, 11), (0, 11), (2, 10), (0, 10), (5, 10)]]
 
 -- Metodos para os pontos
 -- Retonar o valor de um ponto
@@ -123,12 +123,17 @@ f (x,y)
 getCoordAdj :: Coordenada -> [Coordenada]
 getCoordAdj (x,y) = filter f [(x+1,y), (x-1,y), (x,y+1), (x,y-1)] 
 
+-- inverter lista tirar erros
+inverte:: [Int] -> [Int]
+inverte [] = []
+inverte (x:xs) = inverte xs ++[x]
+
 --- verifyneib
 -- Metodo para verificacao do numero passado ser encontrado em coordenadas adjacentes
 -- por meio da chamada recursiva do metodo GetCoordAdj
 -- retorna um valor Booleano
 verificaCoordAdj :: Int -> Coordenada -> [[Ponto]] -> Bool
-verificaCoordAdj num cord matriz = verificarNaLista num (getCoordAdj cord) matriz && verificarCordAdjSupInf cord matriz
+verificaCoordAdj num cord matriz = verificarNaLista num (getCoordAdj cord) matriz -- && verificarCordAdjSupInf cord matriz
 
 -- Metodo para verificacao da Lista de pontos se é igual ao valor procurado
 verificarNaLista :: Int -> [Coordenada] -> [[Ponto]] -> Bool
@@ -140,15 +145,15 @@ verificarNaLista num (x:y) matriz
 -- Vertificando se duas cedulas forem duas regiões iguais, a superior deve ser maior que a inferior
 verificarCordAdjSupInf :: Coordenada -> [[Ponto]] -> Bool
 verificarCordAdjSupInf (x,y) m 
-    | y == 0 = True
-    | pegarGrupoPonto(pegarPontoCoordernada2 (x, y-1) m) /= pegarGrupoPonto(pegarPontoCoordernada2 (x,y) m) = True
-    | pegarValorPonto(pegarPontoCoordernada2 (x,y-1) m) >= pegarValorPonto(pegarPontoCoordernada2 (x,y) m) = True
-    | otherwise = False
+  | x == length m = True
+  | pegarGrupoPonto(pegarPontoCoordernada (x,y) m) /= (pegarGrupoPonto(pegarPontoCoordernada (x+1,y) m)) = True
+  | pegarValorPonto(pegarPontoCoordernada (x,y) m) > pegarValorPonto(pegarPontoCoordernada (x+1,y) m) = True
+  | otherwise = False
 
 -- Metodo retorna números que podem completar uma coordenada, onde é aplicado o filtro de verificação para fazer checagens sobre 
 -- a possibilidade do numero estar na posição.
 numValidos :: Coordenada -> [[Ponto]] -> [Int]
-numValidos cord m = [n | n <- [1..(length(pegarCoordenadasPorGrupo cord m)+1)], verificarNum n cord m]
+numValidos cord m = inverte [n | n <- [1..(length(pegarCoordenadasPorGrupo cord m)+1)], verificarNum n cord m]
 
 -- Metodos finais, falta fazer logicas de verificação para encaixar com eles.
 -- Terminar os dois metodos de solve.
